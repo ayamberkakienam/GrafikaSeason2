@@ -10,8 +10,8 @@ from time import sleep
 window = 0                                             # glut window number
 width, height = 800, 600                               # window size
 rotation = 0
-t = 0
-t_a = list()
+# t = 0
+# t_a = list()
 
 weather_r = 0.35
 weather_g = 0.5
@@ -100,13 +100,12 @@ def obj_road():
     glEnd()
 
 def obj_town():
-    building_width = 10
+    building_width = 100
 
-    glColor3f(1, 1, 0)
-    for i in range(0, t):
-        for ii in range(0, i):
-            building_height = random.uniform(40, 100)
-            utils.draw_rect(ii+2+t, 280, building_width, building_height)
+    glColor3f(0.1, 0.3, 0)
+    for i in range(0, 20, 10):
+        building_height = random.uniform(40, 100)
+        utils.draw_rect(i*building_width+2, 280, building_width, building_height)
 
 
 def draw():                                            # ondraw is called all the time
@@ -160,7 +159,7 @@ def idle():
     global rotation
     global t
     rotation += 2
-    t_a.append(t)
+    # t_a.append(t)
     dayNightCycle()
     glutPostRedisplay()
     
