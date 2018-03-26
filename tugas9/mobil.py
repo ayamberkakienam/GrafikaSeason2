@@ -4,11 +4,19 @@ from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
 
+import random
 from time import sleep
 
 window = 0                                             # glut window number
 width, height = 800, 600                               # window size
 rotation = 0
+t = 0
+t_a = list()
+
+weather_r = 0.35
+weather_g = 0.5
+weather_b = 1
+day = 1
 
 def obj_wheel_1():
     x, y = 190, 250
@@ -75,20 +83,85 @@ def obj_body():
         glVertex2fv(vertex)
     glEnd()
 
+def obj_road():
+    road_width = 280
+    vertices_road = (
+        (0, 0),
+        (0, road_width),
+        (width, road_width),
+        (width, 0),
+        )
+
+    glShadeModel(GL_SMOOTH)
+    glBegin(GL_POLYGON)
+    glColor3f(0.2, 0.2, 0.2)
+    for vertex in vertices_road:
+        glVertex2fv(vertex)
+    glEnd()
+
+def obj_town():
+    building_width = 10
+
+    glColor3f(1, 1, 0)
+    for i in range(0, t):
+        for ii in range(0, i):
+            building_height = random.uniform(40, 100)
+            utils.draw_rect(ii+2+t, 280, building_width, building_height)
+
+
 def draw():                                            # ondraw is called all the time
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT) # clear the screen
     glLoadIdentity()                                   # reset position
     utils.refresh2d(width, height)                     # set mode to 2d
-       
+    
+    glClearColor(weather_r, weather_g, weather_b, 1)
+
+    obj_town()
+    obj_road()
     obj_body()
     obj_wheel_1()
     obj_wheel_2()
 
     glutSwapBuffers()                                  # important for double buffering
-   
+
+def dayNightCycle():
+    global weather_g
+    global weather_r
+    global weather_b
+    global day
+
+    change_speed = 0.005
+    delay = 0.2
+    buff = 0
+
+    # if weather_r > 0.35:
+    #     weather_r = 0.35+change_speed
+    # if weather_g > 0.5:
+    #     weather_g = 0.5+change_speed
+    # if weather_b > 1:
+    #     weather_b = 1+change_speed
+
+    if weather_r > 0.35+delay and weather_g > 0.5+delay and weather_b > 1+delay:
+        day = 1
+
+    if weather_r < 0 and weather_g < 0 and weather_b < 0:
+        day = 0
+
+    if day:
+        weather_r -= change_speed
+        weather_g -= change_speed
+        weather_b -= change_speed
+    else:
+        weather_r += change_speed
+        weather_g += change_speed
+        weather_b += change_speed
+
 def idle():
     global rotation
+    global t
     rotation += 2
+    t_a.append(t)
+    dayNightCycle()
     glutPostRedisplay()
     
 # initialization
