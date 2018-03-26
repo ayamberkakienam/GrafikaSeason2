@@ -8,61 +8,87 @@ from time import sleep
 
 window = 0                                             # glut window number
 width, height = 800, 600                               # window size
+rotation = 0
 
-vertices_wheel = (
-    (300, 300),
-    (100, 300),
-    (100, 100),
-    (300, 100),
-    (400, 400)
-    )
+def obj_wheel_1():
+    x, y = 190, 250
+    glColor3f(0.2, 0.2, 0.2)
+    utils.draw_circle(x, y, 50, 100, 1)
 
-def obj_wheel():
     glPushMatrix()
-    # glRotate(x, 0, 0, 1)
-    glBegin(GL_POLYGON)
-    glColor3f(1, 1, 1)
-    for vertex in vertices_wheel:
-        glVertex2fv(vertex)
-    glEnd()  
+    glColor3f(0.8, 0.8, 0.8)
+    glTranslatef(x, y, 0)
+    glRotatef(rotation, 0, 0, 1)
+    glTranslatef(-x, -y, 0)
+    utils.draw_circle(x, y, 45, 9, 0)
+    utils.draw_circle(x, y, 43, 9, 1)
+
+    glColor3f(0.2, 0.2, 0.2)
+    utils.draw_circle(x, y, 20, 8, 1)
     glPopMatrix()
 
-vertices_body = ( # +230, +350
-    (200, 350),
-    (240, 430),
-    (560, 430),
-    (600, 350),
-    (600, 250),
-    (90, 250),
-    (90, 300),
-    (120, 350),
-    )
+def obj_wheel_2():
+    x, y = 500, 250
+    glColor3f(0.2, 0.2, 0.2)
+    utils.draw_circle(x, y, 50, 100, 1)
+
+    glPushMatrix()
+    glColor3f(0.8, 0.8, 0.8)
+    glTranslatef(x, y, 0)
+    glRotatef(rotation, 0, 0, 1)
+    glTranslatef(-x, -y, 0)
+    utils.draw_circle(x, y, 45, 9, 0)
+    utils.draw_circle(x, y, 43, 9, 1)
+
+    glColor3f(0.2, 0.2, 0.2)
+    utils.draw_circle(x, y, 20, 8, 1)
+    glPopMatrix()
 
 def obj_body():
+    vertices_body = (
+        (200, 350),
+        (240, 430),
+        (560, 430),
+        (600, 350),
+        (600, 250),
+        (90, 250),
+        (90, 300),
+        (120, 350),
+        )
     glShadeModel(GL_SMOOTH)
     glBegin(GL_POLYGON)
-    glColor3fv((0.5, 0.8, 0.2))
+    glColor3f(0.6, 0.93, 0.0)
     for vertex in vertices_body:
         glVertex2fv(vertex)
     glEnd()
 
-x = 10
+    vertices_window_1 = (
+        (215, 350),
+        (250, 420),
+        (370, 420),
+        (370, 350),
+        )
+
+    glBegin(GL_POLYGON)
+    glColor3f(1, 1, 1)
+    for vertex in vertices_window_1:
+        glVertex2fv(vertex)
+    glEnd()
+
 def draw():                                            # ondraw is called all the time
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT) # clear the screen
     glLoadIdentity()                                   # reset position
-    utils.refresh2d(width, height)                           # set mode to 2d
+    utils.refresh2d(width, height)                     # set mode to 2d
        
-    # obj_wheel()
     obj_body()
-    utils.draw_circle(100, 100, 50, 100, 0)
-    # draw_rect(100, 100, 200, 100)                        # rect at (10, 10) with width 200, height 100
-        
+    obj_wheel_1()
+    obj_wheel_2()
 
     glutSwapBuffers()                                  # important for double buffering
    
 def idle():
-    global x
-    x += 10
+    global rotation
+    rotation += 2
     glutPostRedisplay()
     
 # initialization
