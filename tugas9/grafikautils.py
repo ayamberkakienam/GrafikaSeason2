@@ -15,7 +15,6 @@ def refresh2d(width, height):
 
 def draw_rect(x, y, width, height):
     glBegin(GL_QUADS)                                  # start drawing a rectangle
-    glColor3f(0.0, 0.0, 1.0)                           # set color to blue
     glVertex2f(x, y)                                   # bottom left point
     glVertex2f(x + width, y)                           # bottom right point
     glVertex2f(x + width, y + height)                  # top right point

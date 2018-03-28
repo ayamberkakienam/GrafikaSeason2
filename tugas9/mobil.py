@@ -94,17 +94,17 @@ def obj_road():
 
     glShadeModel(GL_SMOOTH)
     glBegin(GL_POLYGON)
-    glColor3f(0.2, 0.2, 0.2)
+    glColor3f(0.3, 0.3, 0.3)
     for vertex in vertices_road:
         glVertex2fv(vertex)
     glEnd()
 
 def obj_town():
-    building_width = 100
+    building_width = 10
 
-    glColor3f(0.1, 0.3, 0)
-    for i in range(0, 20, 10):
-        building_height = random.uniform(40, 100)
+    glColor3f(1, 1, 0)
+    for i in range(0, width):
+        building_height = random.uniform(40, 300)
         utils.draw_rect(i*building_width+2, 280, building_width, building_height)
 
 
