@@ -58,6 +58,7 @@ int main( void )
 
 	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
+	printf("addds\n");
 	glBindVertexArray(VertexArrayID);
 
 	// Create and compile our GLSL program from the shaders

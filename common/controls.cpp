@@ -30,7 +30,7 @@ float verticalAngle = 0.0f;
 float initialFoV = 45.0f;
 
 float speed = 3.0f; // 3 units / second
-float mouseSpeed = 0.005f;
+float mouseSpeed = 0.002f;
 
 
 
@@ -70,6 +70,7 @@ void computeMatricesFromInputs(){
 	
 	// Up vector
 	glm::vec3 up = glm::cross( right, direction );
+	// glm::vec3 up = glm::vec3(0.0f,1.0f,0.0f);
 
 	// Move forward
 	if (glfwGetKey( window, GLFW_KEY_UP ) == GLFW_PRESS){
