@@ -78,7 +78,8 @@ int main( void )
 	glBindVertexArray(VertexArrayID);
 
 	// Create and compile our GLSL program from the shaders
-	GLuint programID = LoadShaders( "TransformVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader" );
+	GLuint programID = LoadShaders( "TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader" );
+	// GLuint programID = LoadShaders( "TransformVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader" );
 
 	// Get a handle for our "MVP" uniform
 	GLuint MatrixID = glGetUniformLocation(programID, "MVP");
@@ -273,6 +274,50 @@ int main( void )
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexbuffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
+	// Two UV coordinatesfor each vertex. They were created with Blender.
+	static const GLfloat g_uv_buffer_data[] = { 
+		0.000059f, 0.000004f, 
+		0.000103f, 0.336048f, 
+		0.335973f, 0.335903f, 
+		1.000023f, 0.000013f, 
+		0.667979f, 0.335851f, 
+		0.999958f, 0.336064f, 
+		0.667979f, 0.335851f, 
+		0.336024f, 0.671877f, 
+		0.667969f, 0.671889f, 
+		1.000023f, 0.000013f, 
+		0.668104f, 0.000013f, 
+		0.667979f, 0.335851f, 
+		0.000059f, 0.000004f, 
+		0.335973f, 0.335903f, 
+		0.336098f, 0.000071f, 
+		0.667979f, 0.335851f, 
+		0.335973f, 0.335903f, 
+		0.336024f, 0.671877f, 
+		1.000004f, 0.671847f, 
+		0.999958f, 0.336064f, 
+		0.667979f, 0.335851f, 
+		0.668104f, 0.000013f, 
+		0.335973f, 0.335903f, 
+		0.667979f, 0.335851f, 
+		0.335973f, 0.335903f, 
+		0.668104f, 0.000013f, 
+		0.336098f, 0.000071f, 
+		0.000103f, 0.336048f, 
+		0.000004f, 0.671870f, 
+		0.336024f, 0.671877f, 
+		0.000103f, 0.336048f, 
+		0.336024f, 0.671877f, 
+		0.335973f, 0.335903f, 
+		0.667969f, 0.671889f, 
+		1.000004f, 0.671847f, 
+		0.667979f, 0.335851f
+	};
+
+	GLuint uvbuffer;
+	glGenBuffers(1, &uvbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(g_uv_buffer_data), g_uv_buffer_data, GL_STATIC_DRAW);
 
 	do{
 
@@ -293,6 +338,12 @@ int main( void )
 		// in the "MVP" uniform
 		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 
+		// Bind our texture in Texture Unit 0
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, Texture);
+		// Set our "myTextureSampler" sampler to use Texture Unit 0
+		glUniform1i(TextureID, 0);
+
 		// 1rst attribute buffer : vertices
 		glEnableVertexAttribArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
@@ -310,6 +361,7 @@ int main( void )
 		glDrawElements(GL_TRIANGLES, sizeof(indices)/sizeof(indices[0]), GL_UNSIGNED_SHORT, NULL);
 
 		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
 
 		// Swap buffers
 		glfwSwapBuffers(window);
@@ -321,7 +373,9 @@ int main( void )
 
 	// Cleanup VBO and shader
 	glDeleteBuffers(1, &vertexbuffer);
+	glDeleteBuffers(1, &uvbuffer);
 	glDeleteProgram(programID);
+	glDeleteTextures(1, &TextureID);
 	glDeleteVertexArrays(1, &VertexArrayID);
 
 	// Close OpenGL window and terminate GLFW
