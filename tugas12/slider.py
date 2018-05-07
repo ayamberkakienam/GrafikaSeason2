@@ -18,23 +18,6 @@ TRANS = (1, 1, 1)
 
 flow = False  # controls type of color flow
 
-class Particle():
-    def __init__(self, startx, starty, col):
-        self.x = startx
-        self.y = random.randint(0, starty)
-        self.col = col
-        self.sx = startx
-        self.sy = starty
-
-    def move(self):
-        if self.y < 0:
-            self.x=self.sx
-            self.y=self.sy
-
-        else:
-            self.y-=1
-
-        self.x+=random.randint(-2, 2)
 
 class Gradient():
     def __init__(self, palette, maximum):
@@ -149,55 +132,3 @@ clock = pygame.time.Clock()
 
 COLORS = [MAGENTA, RED, YELLOW, GREEN, CYAN, BLUE]
 xcolor = Gradient(COLORS, X).gradient
-
-pen = Slider("Pen", 10, 15, 1, 25)
-freq = Slider("Freq", 1, 3, 0.2, 150)
-jmp = Slider("Jump", 10, 20, 1, 275)
-size = Slider("Size", 200, 200, 20, 400)
-focus = Slider("Focus", 0, 6, 0, 525)
-phase = Slider("Phase", 3.14, 6, 0.3, 650)
-speed = Slider("Speed", 50, 150, 10, 775)
-slides = [pen, freq, jmp, size, focus, phase, speed]
-
-num = 0
-
-particles = []
-    for part in range(300):
-        if part % 2 > 0: col = BLACK
-        else: col = RED
-        particles.append( Particle(515, 500, col) )
-
-while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            pos = pygame.mouse.get_pos()
-            for s in slides:
-                if s.button_rect.collidepoint(pos):
-                    s.hit = True
-        elif event.type == pygame.MOUSEBUTTONUP:
-            for s in slides:
-                s.hit = False
-
-    for p in particles:
-        p.move()
-        pygame.draw.circle((X, Y), p.col, (p.x, p.y), 8)
-
-
-    # Move slides
-    for s in slides:
-        if s.hit:
-            s.move()
-
-    # Update screen
-    screen.fill(BLACK)
-    num += 2
-    wave(num)
-
-    for s in slides:
-        s.draw()
-
-    pygame.display.flip()
-    clock.tick(speed.val)

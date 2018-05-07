@@ -18,23 +18,6 @@ TRANS = (1, 1, 1)
 
 flow = False  # controls type of color flow
 
-class Particle():
-    def __init__(self, startx, starty, col):
-        self.x = startx
-        self.y = random.randint(0, starty)
-        self.col = col
-        self.sx = startx
-        self.sy = starty
-
-    def move(self):
-        if self.y < 0:
-            self.x=self.sx
-            self.y=self.sy
-
-        else:
-            self.y-=1
-
-        self.x+=random.randint(-2, 2)
 
 class Gradient():
     def __init__(self, palette, maximum):
@@ -161,12 +144,6 @@ slides = [pen, freq, jmp, size, focus, phase, speed]
 
 num = 0
 
-particles = []
-    for part in range(300):
-        if part % 2 > 0: col = BLACK
-        else: col = RED
-        particles.append( Particle(515, 500, col) )
-
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -180,11 +157,6 @@ while True:
         elif event.type == pygame.MOUSEBUTTONUP:
             for s in slides:
                 s.hit = False
-
-    for p in particles:
-        p.move()
-        pygame.draw.circle((X, Y), p.col, (p.x, p.y), 8)
-
 
     # Move slides
     for s in slides:
