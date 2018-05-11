@@ -4,10 +4,12 @@
 # RMB + move: pan
 # Scroll wheel: zoom in/out
 import sys, pygame, random
+import grafikautils as utils
 from pygame.locals import *
 from pygame.constants import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
+from ctypes import *
 
 # IMPORT OBJECT LOADER
 from objloader import *
@@ -15,23 +17,24 @@ from objloader import *
 white = (255, 255, 255)
 black = (0,0,0)
 grey = (128,128,128)
-class Particle():
-    def __init__(self, startx, starty, col):
-        self.x = startx
-        self.y = random.randint(0, starty)
-        self.col = col
-        self.sx = startx
-        self.sy = starty
 
-    def move(self):
-        if self.y < 0:
-            self.x=self.sx
-            self.y=self.sy
+# class Particle():
+#     def __init__(self, startx, starty, col):
+#         self.x = startx
+#         self.y = random.randint(0, starty)
+#         self.col = col
+#         self.sx = startx
+#         self.sy = starty
 
-        else:
-            self.y-=1
+#     def move(self):
+#         if self.y < 0:
+#             self.x=self.sx
+#             self.y=self.sy
 
-        self.x+=random.randint(-2, 2)
+#         else:
+#             self.y-=1
+
+#         self.x+=random.randint(-2, 2)
 
 pygame.init()
 viewport = (800,600)
@@ -46,6 +49,7 @@ glEnable(GL_LIGHT0)
 glEnable(GL_LIGHTING)
 glEnable(GL_COLOR_MATERIAL)
 glEnable(GL_DEPTH_TEST)
+glEnableClientState (GL_VERTEX_ARRAY)
 glShadeModel(GL_SMOOTH)           # most obj files expect to be smooth-shaded
 
 # LOAD OBJECT AFTER PYGAME INIT
@@ -65,11 +69,18 @@ tx, ty = (0,0)
 zpos = 5
 rotate = move = False
 
-particles = []
-for part in range(300):
-    if part % 2 > 0: col = white
-    else: col = grey
-    particles.append( Particle(515, 500, col) )
+# particles = []
+# for part in range(300):
+#     if part % 2 > 0: col = white
+#     else: col = grey
+#     particles.append( Particle(515, 500, col) )
+
+vertices = [ 0.0, 1.0, 0.0,  0.0, 0.0, 0.0,  1.0, 1.0, 0.0 ]
+vbo = glGenBuffers (1)
+glBindBuffer (GL_ARRAY_BUFFER, vbo)
+glBufferData (GL_ARRAY_BUFFER, len(vertices)*4, (c_float*len(vertices))(*vertices), GL_STATIC_DRAW)
+
+px, py = (tx/20, ty/20)
 
 while 1:
     clock.tick(30)
@@ -105,15 +116,25 @@ while 1:
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glLoadIdentity()
 
-    for p in particles:
-        p.move()
-        pygame.draw.circle(srf, p.col, (p.x, p.y), 100)
+    # for p in particles:
+    #     p.move()
+    #     pygame.draw.circle(srf, p.col, (p.x, p.y), 100)
 
     # RENDER OBJECT
     glTranslate(tx/20., ty/20., - zpos)
     glLightfv(GL_LIGHT0, GL_AMBIENT, (intensity, intensity, intensity, 1.0))
+    glRotate(-90, 1, 0, 0)
     glRotate(ry, 1, 0, 0)
-    glRotate(rx, 0, 1, 0)
+    glRotate(rx, 0, 0, 1)
+    print ry
     glCallList(obj.gl_list)
+
+    glTranslate(px, py, - zpos)
+    glBindBuffer (GL_ARRAY_BUFFER, vbo)
+    glVertexPointer (3, GL_FLOAT, 0, None)
+    glDrawArrays (GL_TRIANGLES, 0, 3)
+
+    px += 0.1/20
+    py += 0.1/20
 
     pygame.display.flip()
