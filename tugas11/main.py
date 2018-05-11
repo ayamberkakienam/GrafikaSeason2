@@ -18,23 +18,23 @@ white = (255, 255, 255)
 black = (0,0,0)
 grey = (128,128,128)
 
-# class Particle():
-#     def __init__(self, startx, starty, col):
-#         self.x = startx
-#         self.y = random.randint(0, starty)
-#         self.col = col
-#         self.sx = startx
-#         self.sy = starty
+class Particle():
+    def __init__(self, startx, starty, col):
+        self.x = startx
+        self.y = starty
+        self.col = col
+        self.sx = startx
+        self.sy = starty
 
-#     def move(self):
-#         if self.y < 0:
-#             self.x=self.sx
-#             self.y=self.sy
+    def move(self):
+        if self.y < -10:
+            self.x=self.sx
+            self.y=self.sy
 
-#         else:
-#             self.y-=1
+        else:
+            self.y-=random.uniform(0.2, 0.7)
 
-#         self.x+=random.randint(-2, 2)
+        self.x+=random.uniform(-0.1, 0.1)
 
 pygame.init()
 viewport = (800,600)
@@ -69,11 +69,11 @@ tx, ty = (0,0)
 zpos = 5
 rotate = move = False
 
-# particles = []
-# for part in range(300):
-#     if part % 2 > 0: col = white
-#     else: col = grey
-#     particles.append( Particle(515, 500, col) )
+particles = []
+for part in range(500):
+    if part % 2 > 0: col = white
+    else: col = grey
+    particles.append( Particle(0, -2.2, col) )
 
 vertices = [ 0.0, 1.0, 0.0,  0.0, 0.0, 0.0,  1.0, 1.0, 0.0 ]
 vbo = glGenBuffers (1)
@@ -116,25 +116,26 @@ while 1:
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glLoadIdentity()
 
-    # for p in particles:
-    #     p.move()
-    #     pygame.draw.circle(srf, p.col, (p.x, p.y), 100)
-
     # RENDER OBJECT
     glTranslate(tx/20., ty/20., - zpos)
     glLightfv(GL_LIGHT0, GL_AMBIENT, (intensity, intensity, intensity, 1.0))
     glRotate(-90, 1, 0, 0)
     glRotate(ry, 1, 0, 0)
     glRotate(rx, 0, 0, 1)
-    print ry
     glCallList(obj.gl_list)
 
-    glTranslate(px, py, - zpos)
-    glBindBuffer (GL_ARRAY_BUFFER, vbo)
-    glVertexPointer (3, GL_FLOAT, 0, None)
-    glDrawArrays (GL_TRIANGLES, 0, 3)
-
-    px += 0.1/20
-    py += 0.1/20
+    for p in particles:
+        p.move()
+        # glTranslate(p.x, p.y, - zpos)
+        # glBindBuffer (GL_ARRAY_BUFFER, vbo)
+        # glVertexPointer (3, GL_FLOAT, 0, None)
+        # glDrawArrays (GL_TRIANGLES, 0, 3)
+        glColor3f(1, 1, 1)
+        utils.draw_circle(p.x, p.y, 0.05, 100, True)
 
     pygame.display.flip()
+
+# TODO:
+#   - naikin z starting position dari asep
+#   - bikin atribut pos z
+#   - 3d particle?
