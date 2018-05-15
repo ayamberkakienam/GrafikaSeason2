@@ -21,6 +21,14 @@ def draw_rect(x, y, width, height):
     glVertex2f(x, y + height)                          # top left point
     glEnd()
 
+def draw_line_hujan(x,y,z,len,windx,windy):
+	glBegin(GL_LINES)
+	finx = x + windx
+	finy = y + windy
+	finz = z + len
+	glVertex3fv(x,y,z)
+	glVertex3fv(finx,finy,finz)
+		
 def draw_circle(cx, cy, r, num_segments, filled):
 	theta = 2 * 3.1415926 / num_segments
 	c = math.cos(theta)

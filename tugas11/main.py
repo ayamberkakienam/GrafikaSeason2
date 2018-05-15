@@ -50,13 +50,24 @@ class ParticleHujan():
         self.sx = self.x
         self.sy = self.y
         self.sz = startz
+        self.draw = True
 
-    def move(self):
-        if (self.z < -0.1):
-            self.z = 1
+    def move(self,windx,windy):
+        if (self.z < 1):
+            self.draw = False
         else:
             self.z = self.z - 0.01
+            self.x = self.x + windx
+            self.y = self.y + windy
 
+    def isDraw(self):
+        return self.draw
+
+    def returnStart(self):
+        self.x = self.sx
+        self.y = self.sy
+        self.z = self.sz
+        self.draw = True
 
 pygame.init()
 viewport = (800,600)
@@ -111,6 +122,8 @@ glBindBuffer (GL_ARRAY_BUFFER, vbo)
 glBufferData (GL_ARRAY_BUFFER, len(vertices)*4, (c_float*len(vertices))(*vertices), GL_STATIC_DRAW)
 
 px, py = (tx/20, ty/20)
+windx = 0
+windy = 0
 
 while 1:
     clock.tick(30)
@@ -137,10 +150,19 @@ while 1:
             if move:
                 tx += i
                 ty -= j
-        elif e.type == KEYDOWN and e.key == K_UP:
+        elif e.type == KEYDOWN and e.key == K_UP and intensity < 1:
             intensity += 0.1
-        elif e.type == KEYDOWN and e.key == K_DOWN:
+        elif e.type == KEYDOWN and e.key == K_DOWN and intensity > -1:
             intensity -= 0.1
+        elif e.type == KEYDOWN and e.key == K_w and windx < 1:
+            windx = windx + 0.01
+        elif e.type == KEYDOWN and e.key == K_s and windx > -1:
+            windx = windx - 0.01
+        elif e.type == KEYDOWN and e.key == K_d and windy < 1:
+            windy = windy + 0.01
+        elif e.type == KEYDOWN and e.key == K_a and windy > -1:
+            windy = windy - 0.01
+
 
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -164,10 +186,14 @@ while 1:
         # utils.draw_circle(p.x, p.y, 0.05, 100, True)
         utils.draw_cube(p.x, p.y, p.z)
 
-    for part in range(10):
-        ptemp = hujan[part]
-        ptemp.move()
-        utils.draw_cube(ptemp.x,ptemp.y,ptemp.z)
+    for h in hujan:
+        if h.isDraw():
+            h.move(windx,windy)
+            utils.draw_line_hujan(h.x, h.y, h.z, 0.05, windx, windy)            
+        else:
+            h.returnStart()
+
+        
 
 
     pygame.display.flip()
