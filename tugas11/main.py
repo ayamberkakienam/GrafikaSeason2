@@ -17,24 +17,46 @@ from objloader import *
 white = (255, 255, 255)
 black = (0,0,0)
 grey = (128,128,128)
+blue = (20,20,128)
 
 class Particle():
-    def __init__(self, startx, starty, col):
+    def __init__(self, startx, starty, startz, col):
         self.x = startx
         self.y = starty
+        self.z = startz
         self.col = col
         self.sx = startx
         self.sy = starty
+        self.sz = startz
 
     def move(self):
         if self.y < -10:
             self.x=self.sx
             self.y=self.sy
+            self.z=self.sz
 
         else:
             self.y-=random.uniform(0.2, 0.7)
 
         self.x+=random.uniform(-0.1, 0.1)
+        # self.z+=random.uniform(-0.1, 0.1)
+
+class ParticleHujan():
+    def __init__(self,startz):
+        self.x = random.uniform(-5,5)
+        self.y = random.uniform(-5,5)
+        self.z = startz
+        self.col = blue
+        self.sx = self.x
+        self.sy = self.y
+        self.sz = startz
+
+    def move(self):
+        if (self.z < -0.1):
+            self.z = 1
+        else:
+            self.z = self.z - 0.01
+
 
 pygame.init()
 viewport = (800,600)
@@ -70,10 +92,18 @@ zpos = 5
 rotate = move = False
 
 particles = []
-for part in range(500):
-    if part % 2 > 0: col = white
-    else: col = grey
-    particles.append( Particle(0, -2.2, col) )
+hujan = []
+
+for part in range(10):
+    # if part % 2 > 0: col = white
+    # else: col = grey
+    col = white
+    particles.append( Particle(0, -2.2, 0, col) )
+
+for part in range(10):
+    ssz = 0.5 + part
+    temp = ParticleHujan(ssz)
+    hujan.append(temp)
 
 vertices = [ 0.0, 1.0, 0.0,  0.0, 0.0, 0.0,  1.0, 1.0, 0.0 ]
 vbo = glGenBuffers (1)
@@ -131,7 +161,14 @@ while 1:
         # glVertexPointer (3, GL_FLOAT, 0, None)
         # glDrawArrays (GL_TRIANGLES, 0, 3)
         glColor3f(1, 1, 1)
-        utils.draw_circle(p.x, p.y, 0.05, 100, True)
+        # utils.draw_circle(p.x, p.y, 0.05, 100, True)
+        utils.draw_cube(p.x, p.y, p.z)
+
+    for part in range(10):
+        ptemp = hujan[part]
+        ptemp.move()
+        utils.draw_cube(ptemp.x,ptemp.y,ptemp.z)
+
 
     pygame.display.flip()
 
