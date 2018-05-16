@@ -57,9 +57,9 @@ class ParticleHujan():
         if (self.z < 1):
             self.draw = False
         else:
-            self.z = self.z - 0.15
-            self.x = self.x + windx
-            self.y = self.y + windy
+            self.z = self.z - random.uniform(0.1,0.2)
+            self.x = self.x - windx
+            self.y = self.y - windy
 
     def isDraw(self):
         return self.draw
@@ -106,15 +106,15 @@ rotate = move = False
 particles = []
 hujan = []
 
-for part in range(300):
+for part in range(50):
     r = random.uniform(0.0, 1.0)
     g = random.uniform(0.0, 1.0)
     b = random.uniform(0.0, 1.0)
     col = (r,g,b)
     particles.append( Particle(0, -2.2, 0, col) )
 
-for part in range(200):
-    ssz = 0.5 + part
+for part in range(5000):
+    ssz = 0.5 + part/50
     temp = ParticleHujan(ssz)
     hujan.append(temp)
 
