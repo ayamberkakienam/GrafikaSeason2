@@ -14,11 +14,11 @@ from ctypes import *
 # IMPORT OBJECT LOADER
 from objloader import *
 
-white = (255,255,255)
+white = (1,1,1)
 black = (0,0,0)
-grey = (128,128,128)
-blue = (20,20,255)
-brown = (252,161,25)
+grey = (0.5,0.5,0.5)
+blue = (0.23,0.52,1)
+brown = (0.98,0.63,0.098)
 
 class Particle():
     def __init__(self, startx, starty, startz, col):
@@ -57,7 +57,7 @@ class ParticleHujan():
         if (self.z < 1):
             self.draw = False
         else:
-            self.z = self.z - 0.05
+            self.z = self.z - 0.15
             self.x = self.x + windx
             self.y = self.y + windy
 
@@ -107,12 +107,13 @@ particles = []
 hujan = []
 
 for part in range(300):
-    # if part % 2 > 0: col = white
-    # else: col = grey
-    col = brown
+    r = random.uniform(0.0, 1.0)
+    g = random.uniform(0.0, 1.0)
+    b = random.uniform(0.0, 1.0)
+    col = (r,g,b)
     particles.append( Particle(0, -2.2, 0, col) )
 
-for part in range(100):
+for part in range(200):
     ssz = 0.5 + part
     temp = ParticleHujan(ssz)
     hujan.append(temp)
@@ -127,7 +128,8 @@ windx = 0
 windy = 0
 
 while 1:
-    clock.tick(30)
+    print "fps:", clock.get_fps()
+    clock.tick()
     
     # srf.fill(white)
     for e in pygame.event.get():
@@ -183,15 +185,15 @@ while 1:
         # glBindBuffer (GL_ARRAY_BUFFER, vbo)
         # glVertexPointer (3, GL_FLOAT, 0, None)
         # glDrawArrays (GL_TRIANGLES, 0, 3)
-        glColor3f(252,161,25)  
         # utils.draw_circle(p.x, p.y, 0.05, 100, True)
+        glColor3f(p.col[0], p.col[1], p.col[2])
         utils.draw_cube(p.x, p.y, p.z)
 
     for h in hujan:
         if h.isDraw():
             h.move(windx,windy)
             glColor3f(h.col[0], h.col[1], h.col[2])
-            utils.draw_line_hujan(h.x, h.y, h.z, 0.1, windx, windy)            
+            utils.draw_line_hujan(h.x, h.y, h.z, 0.2, windx, windy)            
         else:
             h.returnStart()
 
