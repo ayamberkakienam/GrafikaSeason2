@@ -14,10 +14,11 @@ from ctypes import *
 # IMPORT OBJECT LOADER
 from objloader import *
 
-white = (255, 255, 255)
+white = (255,255,255)
 black = (0,0,0)
 grey = (128,128,128)
-blue = (20,20,128)
+blue = (20,20,255)
+brown = (252,161,25)
 
 class Particle():
     def __init__(self, startx, starty, startz, col):
@@ -56,7 +57,7 @@ class ParticleHujan():
         if (self.z < 1):
             self.draw = False
         else:
-            self.z = self.z - 0.01
+            self.z = self.z - 0.05
             self.x = self.x + windx
             self.y = self.y + windy
 
@@ -105,21 +106,21 @@ rotate = move = False
 particles = []
 hujan = []
 
-for part in range(10):
+for part in range(300):
     # if part % 2 > 0: col = white
     # else: col = grey
-    col = white
+    col = brown
     particles.append( Particle(0, -2.2, 0, col) )
 
-for part in range(10):
+for part in range(100):
     ssz = 0.5 + part
     temp = ParticleHujan(ssz)
     hujan.append(temp)
 
-vertices = [ 0.0, 1.0, 0.0,  0.0, 0.0, 0.0,  1.0, 1.0, 0.0 ]
-vbo = glGenBuffers (1)
-glBindBuffer (GL_ARRAY_BUFFER, vbo)
-glBufferData (GL_ARRAY_BUFFER, len(vertices)*4, (c_float*len(vertices))(*vertices), GL_STATIC_DRAW)
+# vertices = [ 0.0, 1.0, 0.0,  0.0, 0.0, 0.0,  1.0, 1.0, 0.0 ]
+# vbo = glGenBuffers (1)
+# glBindBuffer (GL_ARRAY_BUFFER, vbo)
+# glBufferData (GL_ARRAY_BUFFER, len(vertices)*4, (c_float*len(vertices))(*vertices), GL_STATIC_DRAW)
 
 px, py = (tx/20, ty/20)
 windx = 0
@@ -182,14 +183,15 @@ while 1:
         # glBindBuffer (GL_ARRAY_BUFFER, vbo)
         # glVertexPointer (3, GL_FLOAT, 0, None)
         # glDrawArrays (GL_TRIANGLES, 0, 3)
-        glColor3f(1, 1, 1)
+        glColor3f(252,161,25)  
         # utils.draw_circle(p.x, p.y, 0.05, 100, True)
         utils.draw_cube(p.x, p.y, p.z)
 
     for h in hujan:
         if h.isDraw():
             h.move(windx,windy)
-            utils.draw_line_hujan(h.x, h.y, h.z, 0.05, windx, windy)            
+            glColor3f(h.col[0], h.col[1], h.col[2])
+            utils.draw_line_hujan(h.x, h.y, h.z, 0.1, windx, windy)            
         else:
             h.returnStart()
 

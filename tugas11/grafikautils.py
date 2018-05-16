@@ -26,8 +26,9 @@ def draw_line_hujan(x,y,z,len,windx,windy):
 	finx = x + windx
 	finy = y + windy
 	finz = z + len
-	glVertex3fv(x,y,z)
-	glVertex3fv(finx,finy,finz)
+	glVertex3f(x,y,z)
+	glVertex3f(finx,finy,finz)
+	glEnd()
 		
 def draw_circle(cx, cy, r, num_segments, filled):
 	theta = 2 * 3.1415926 / num_segments
